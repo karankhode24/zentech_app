@@ -9,9 +9,9 @@ Welcome to the Zentech App! This project is designed to streamline and optimize 
 - Dark mode/ Light mode UI updated
 - Upload Profile Pic
 - show active/inactive status
-- give access to user to use application
+- give access to the user to use the application
 - authorization
-- Particle effect to login page
+- Particle effect on the login page
 - edit/view/remove user
 
 ## Prerequisites
