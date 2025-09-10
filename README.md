@@ -1,4 +1,4 @@
-# Zentech App
+# Zentech  (Employee management app)
 
 Welcome to the Zentech App! This project is designed to streamline and optimize technology solutions for businesses.
 
