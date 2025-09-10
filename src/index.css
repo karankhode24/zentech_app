@@ -542,8 +542,9 @@ select.form-control {
 /* Authentication Styles */
 .login-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #8f00ff78, #ffb042);
-  display: flex;
+  background: linear-gradient(135deg, #fb8909eb, #fb8909eb);
+  display: flex
+;
   align-items: center;
   justify-content: center;
   position: relative;
@@ -653,7 +654,7 @@ select.form-control {
 
 /* Header Styles */
 .Zentech-header {
-  background: linear-gradient(135deg, #eb00ff75, #FF8C42);
+  background: linear-gradient(135deg, #ef8d4ef7, #ff751c);
   color: white;
   padding: 1rem 0;
   box-shadow: var(--shadow-sm);

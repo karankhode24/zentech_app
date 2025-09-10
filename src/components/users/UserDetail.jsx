@@ -16,7 +16,6 @@ export default function UserDetail({
 
   return (
     <div className="container">
-      
       <nav className="breadcrumb-custom">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -34,7 +33,6 @@ export default function UserDetail({
         </ol>
       </nav>
 
-      
       <div className="user-profile-header">
         <div className="d-flex align-items-center">
           <img
@@ -67,9 +65,7 @@ export default function UserDetail({
             </button>
             <button
               className="btn btn-outline-warning"
-              onClick={() =>
-                alert("Reset password functionality coming soon!")
-              }
+              onClick={() => alert("Reset password functionality coming soon!")}
             >
               <i className="bi bi-arrow-clockwise me-2" />
               Reset Password
@@ -103,8 +99,7 @@ export default function UserDetail({
           </div>
         </div> */}
 
-
-<div className="info-card">
+      <div className="info-card">
         <h4>Personal Information</h4>
         <div className="info-row">
           <div className="info-item">
@@ -163,7 +158,6 @@ export default function UserDetail({
         </div>
       </div>
 
-      
       <div className="info-card">
         <h4>
           Applications & Entitlements
@@ -189,7 +183,6 @@ export default function UserDetail({
         )}
       </div>
 
-     
       <ApplicationAssignmentModal
         show={showAppModal}
         onClose={() => setShowAppModal(false)}
@@ -197,7 +190,7 @@ export default function UserDetail({
         availableApps={availableApps}
         onAssignApp={(userId, appData) => {
           onAssignApp(userId, appData);
-          setShowAppModal(false); 
+          setShowAppModal(false);
         }}
       />
     </div>
