@@ -6,7 +6,7 @@ Welcome to the Zentech App! This project is designed to streamline and optimize 
 
 - Admin access
 - CRUD User
-- Dark mode
+- Dark mode/ Light mode UI updated
 - Upload Profile Pic
 - show active/inactive status
 - give access to user to use application
