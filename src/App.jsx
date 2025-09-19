@@ -10,72 +10,93 @@ import UserDetail from "./components/users/UserDetail";
 import AddUserModal from "./components/users/modals/AddUserModal";
 import UserEditModal from "./components/users/modals/UserEditModal";
 import DeleteConfirmationModal from "./components/users/modals/DeleteConfirmationModal";
+import ResetPasswordModal from "./components/users/modals/ResetPasswordModal";
 import ToastContainer from "./components/toast/ToastContainer";
 
 export default function App() {
+  // Auth + user
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user] = useState({ name: "Hi Karan", role: "System Administrator" });
+  const [admin] = useState({ name: "Hi Karan", role: "System Administrator" });
+
+  // UI / Theme
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState("users");
   const [currentView, setCurrentView] = useState("list");
-  const [selectedUser, setSelectedUser] = useState(null);
+
+  // Users data + selection
   const [users, setUsers] = useState(applicationData.users);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  // Modals
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
+
+  // Temp modal subjects
   const [userToEdit, setUserToEdit] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
-  const [toasts, setToasts] = useState([]);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [userForReset, setUserForReset] = useState(null);
 
-  // Init: always start unauthenticated and load dark mode preference
+  // Toasts
+  const [toasts, setToasts] = useState([]);
+
+  // ---------- Init ----------
   useEffect(() => {
+    // Always land on Login each reload (demo mode)
     localStorage.removeItem("Zentech-auth");
-    // Load dark mode preference from localStorage
+
+    // Restore dark mode preference
     const savedDarkMode = localStorage.getItem("Zentech-dark-mode");
-    if (savedDarkMode !== null) {
-      setIsDarkMode(JSON.parse(savedDarkMode));
-    }
+    if (savedDarkMode != null) setIsDarkMode(JSON.parse(savedDarkMode));
   }, []);
 
-  // Update document class when dark mode changes
+  // Apply theme class to <html>/<body>
   useEffect(() => {
+    const root = document.documentElement;
     if (isDarkMode) {
-      document.documentElement.classList.add("dark-mode");
+      root.classList.add("dark-mode");
       document.body.classList.add("dark-mode");
-      document.documentElement.setAttribute("data-theme", "dark");
+      root.setAttribute("data-theme", "dark");
     } else {
-      document.documentElement.classList.remove("dark-mode");
+      root.classList.remove("dark-mode");
       document.body.classList.remove("dark-mode");
-      document.documentElement.setAttribute("data-theme", "light");
+      root.setAttribute("data-theme", "light");
     }
   }, [isDarkMode]);
 
-  // Toast helpers
+  // ---------- Helpers ----------
   const addToast = (message, type = "success") =>
     setToasts((prev) => [...prev, { id: Date.now(), message, type }]);
   const removeToast = (id) =>
     setToasts((prev) => prev.filter((t) => t.id !== id));
 
-  // Dark mode toggle
-  const handleToggleTheme = () => {
-    const newDarkMode = !isDarkMode;
-    setIsDarkMode(newDarkMode);
-    localStorage.setItem("Zentech-dark-mode", JSON.stringify(newDarkMode));
-  };
-
-  // Auth
+  // ---------- Auth ----------
   const handleLogin = (remember) => {
     setIsAuthenticated(true);
     if (remember) localStorage.setItem("Zentech-auth", "true");
-    addToast("Welcome back! You have successfully signed in.", "success");
+    addToast("Welcome back! You have successfully signed in.");
   };
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem("Zentech-auth");
-    addToast("You have been logged out successfully.", "success");
+    addToast("You have been logged out successfully.");
   };
 
-  // Navigation / views
+  // ---------- Theme ----------
+  const handleToggleTheme = () => {
+    const next = !isDarkMode;
+    setIsDarkMode(next);
+    localStorage.setItem("Zentech-dark-mode", JSON.stringify(next));
+  };
+
+  // ---------- Navigation / Views ----------
+  const handleTabChange = (tab) => {
+    if (tab === "roles") return addToast("Roles management is coming soon!", "info");
+    setActiveTab(tab);
+    setCurrentView("list");
+    setSelectedUser(null);
+  };
   const handleUserClick = (u) => {
     setSelectedUser(u);
     setCurrentView("detail");
@@ -84,36 +105,26 @@ export default function App() {
     setCurrentView("list");
     setSelectedUser(null);
   };
-  const handleTabChange = (tab) => {
-    if (tab === "roles") return addToast("Roles management is coming soon!", "info");
-    setActiveTab(tab);
-    handleBack();
-  };
 
-  // User actions
+  // ---------- User actions ----------
   const handleToggleActive = (userId, active) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, active } : u))
-    );
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, active } : u)));
     const u = users.find((x) => x.id === userId);
     if (u) addToast(`${u.fullName} has been ${active ? "activated" : "deactivated"}.`);
   };
+
+  const handleCreateUser = () => setShowAddUserModal(true);
 
   const handleEditUser = (u) => {
     setUserToEdit(u);
     setShowEditModal(true);
   };
 
-  const handleCreateUser = () => setShowAddUserModal(true);
-
   const handleSaveUser = (userId, formData) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, ...formData } : u))
-    );
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, ...formData } : u)));
     setShowEditModal(false);
     setUserToEdit(null);
-    if (selectedUser?.id === userId)
-      setSelectedUser({ ...selectedUser, ...formData });
+    if (selectedUser?.id === userId) setSelectedUser({ ...selectedUser, ...formData });
     addToast("User information has been updated successfully.");
   };
 
@@ -136,14 +147,13 @@ export default function App() {
     setUserToDelete(u);
     setShowDeleteModal(true);
   };
-
   const handleConfirmDelete = (userId) => {
     setUsers((prev) => prev.filter((u) => u.id !== userId));
     if (selectedUser?.id === userId) handleBack();
     addToast("User has been deleted successfully.");
   };
 
-  // Apps
+  // ---------- Apps (assign / remove) ----------
   const handleAssignApp = (userId, appData) => {
     setUsers((prev) =>
       prev.map((u) =>
@@ -165,33 +175,42 @@ export default function App() {
     setUsers((prev) =>
       prev.map((u) =>
         u.id === userId
-          ? {
-              ...u,
-              applications: (u.applications || []).filter(
-                (a) => a.code !== appCode
-              ),
-            }
+          ? { ...u, applications: (u.applications || []).filter((a) => a.code !== appCode) }
           : u
       )
     );
     if (selectedUser?.id === userId) {
-      const removedApp = selectedUser.applications?.find(
-        (a) => a.code === appCode
-      );
+      const removedApp = selectedUser.applications?.find((a) => a.code === appCode);
       setSelectedUser({
         ...selectedUser,
-        applications: (selectedUser.applications || []).filter(
-          (a) => a.code !== appCode
-        ),
+        applications: (selectedUser.applications || []).filter((a) => a.code !== appCode),
       });
       if (removedApp) addToast(`${removedApp.name} access has been removed.`);
     }
   };
 
-  // Auth gate
+  // ---------- Dummy password reset ----------
+  const handleOpenReset = (u) => {
+    setUserForReset(u);
+    setShowResetModal(true);
+  };
+
+  const handleResetPassword = (userId, newPassword) => {
+    // Demo only: just mark a timestamp in local state
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === userId ? { ...u, lastPasswordReset: new Date().toISOString() } : u
+      )
+    );
+    setShowResetModal(false);
+    setUserForReset(null);
+    addToast("Password has been reset successfully.", "success");
+  };
+
+  // ---------- Auth gate ----------
   if (!isAuthenticated) return <LoginPage onLogin={handleLogin} />;
 
-  // Main content
+  // ---------- Main content ----------
   const content =
     activeTab !== "users" ? (
       <div className="container">
@@ -208,6 +227,7 @@ export default function App() {
         onAssignApp={handleAssignApp}
         onRemoveApp={handleRemoveApp}
         availableApps={applicationData.availableApplications}
+        onOpenReset={handleOpenReset}          // <-- pass reset opener
       />
     ) : (
       <UserList
@@ -221,11 +241,17 @@ export default function App() {
     );
 
   return (
-    <div className={`app Zentech-theme ${isDarkMode ? 'dark-mode' : ''}`}>
-      <Header user={user} onLogout={handleLogout} isDarkMode={isDarkMode} onToggleTheme={handleToggleTheme} />
+    <div className={`app Zentech-theme ${isDarkMode ? "dark-mode" : ""}`}>
+      <Header
+        user={admin}
+        onLogout={handleLogout}
+        isDarkMode={isDarkMode}
+        onToggleTheme={handleToggleTheme}
+      />
       <Navigation activeTab={activeTab} onTabChange={handleTabChange} />
       {content}
 
+      {/* Modals */}
       <AddUserModal
         show={showAddUserModal}
         onClose={() => setShowAddUserModal(false)}
@@ -251,6 +277,16 @@ export default function App() {
           setUserToDelete(null);
         }}
         onConfirm={handleConfirmDelete}
+      />
+
+      <ResetPasswordModal
+        show={showResetModal}
+        user={userForReset}
+        onClose={() => {
+          setShowResetModal(false);
+          setUserForReset(null);
+        }}
+        onSubmit={handleResetPassword}
       />
 
       <ToastContainer toasts={toasts} onRemoveToast={removeToast} />

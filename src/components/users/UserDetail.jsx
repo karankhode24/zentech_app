@@ -10,6 +10,7 @@ export default function UserDetail({
   onAssignApp,
   onRemoveApp,
   availableApps,
+  onOpenReset, // <-- add this
 }) {
   const [showAppModal, setShowAppModal] = useState(false);
   if (!user) return null;
@@ -49,23 +50,18 @@ export default function UserDetail({
               {user.active ? "Active" : "Inactive"}
             </span>
             <div className="mt-2">
-              <small className="text-muted">
-                Last accessed: {user.lastAccessed}
-              </small>
+              <small className="text-muted">Last accessed: {user.lastAccessed}</small>
             </div>
           </div>
 
           <div className="d-flex gap-2">
-            <button
-              className="btn btn-secondary"
-              onClick={() => onEditUser(user)}
-            >
+            <button className="btn btn-secondary" onClick={() => onEditUser(user)}>
               <i className="bi bi-pencil me-2" />
               Edit Profile
             </button>
             <button
               className="btn btn-outline-warning"
-              onClick={() => alert("Reset password functionality coming soon!")}
+              onClick={() => onOpenReset?.(user)} // <-- open modal passed from App
             >
               <i className="bi bi-arrow-clockwise me-2" />
               Reset Password
@@ -73,31 +69,6 @@ export default function UserDetail({
           </div>
         </div>
       </div>
-
-      {/* Info Card- error */}
-      {/* <div className="info-card">
-        <h4>Personal Information</h4>
-        <div className="info-row">
-          <div className="info-item">
-            <label>Full Name</label>
-            <div className="value">{user.fullName}</div>
-          </div>
-          <div className="info-item">
-            <label>Email Address</label>
-            <div className="value">{user.email}</div>
-          </div>
-        </div>
-
-        <div className="info-row">
-          <div className="info-item">
-            <label>Phone Number</label>
-            <div className="value">{user.phone}</div>
-          </div>
-          <div className="info-item">
-            <label>Username</label>
-            <div className="value">{user.username}</div>
-          </div>
-        </div> */}
 
       <div className="info-card">
         <h4>Personal Information</h4>
@@ -138,9 +109,7 @@ export default function UserDetail({
           <div className="info-item">
             <label>User Type</label>
             <div className="value">
-              <span
-                className={`user-type-badge user-type-${user.userType.toLowerCase()}`}
-              >
+              <span className={`user-type-badge user-type-${user.userType.toLowerCase()}`}>
                 {user.userType}
               </span>
             </div>
@@ -148,9 +117,7 @@ export default function UserDetail({
           <div className="info-item">
             <label>Status</label>
             <div className="value">
-              <span
-                className={user.active ? "status-active" : "status-inactive"}
-              >
+              <span className={user.active ? "status-active" : "status-inactive"}>
                 {user.active ? "Active" : "Inactive"}
               </span>
             </div>
