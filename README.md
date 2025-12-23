@@ -1,4 +1,4 @@
-# Zentech  (Employee management app)
+# VelocityHR  (Employee management app)
 
 Welcome to the Zentech App! This project is designed to streamline and optimize technology solutions for businesses.
 
